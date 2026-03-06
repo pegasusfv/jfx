@@ -1,7 +1,9 @@
 name: "CodeQL Full JavaFX Scan (Java + C++)"
 
 on:
-  workflow_dispatch: 
+  push:
+    branches:
+      - testGitSecurityScan
 
 jobs:
   analyze:
