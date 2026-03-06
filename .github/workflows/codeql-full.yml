@@ -45,7 +45,7 @@ jobs:
     # The 'sdk' task builds all Java classes and all native libraries
     - name: Build Full JavaFX SDK
       run: |
-        bash gradlew -PCOMPILE_MEDIA=true sdk
+        bash gradlew -PCOMPILE_WEBKIT=true sdk
 
     # 4. Analyze the database and upload to your Security tab
     - name: Perform CodeQL Analysis
