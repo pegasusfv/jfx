@@ -27,10 +27,10 @@ jobs:
         libgtk-3-dev libasound2-dev libavcodec-dev libavformat-dev \
         libxtst-dev libx11-dev libgl1-mesa-dev pkg-config
 
-    - name: Setup JDK 21
+    - name: Setup JDK 25
       uses: actions/setup-java@v4
       with:
-        java-version: '21'
+        java-version: '25'
         distribution: 'temurin'
 
     # 2. Tell CodeQL to track BOTH Java and C++ simultaneously
