@@ -1,0 +1,51 @@
+name: "CodeQL Full JavaFX Scan (Java + C++)"
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  analyze:
+    name: CodeQL Analysis
+    # We use a larger runner if available, but ubuntu-latest works
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 1. Install ALL Linux dependencies for Glass, Media, and WebKit
+    - name: Install OpenJFX Build Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y bison flex gperf ruby cmake build-essential \
+        libgtk-3-dev libasound2-dev libavcodec-dev libavformat-dev \
+        libxtst-dev libx11-dev libgl1-mesa-dev pkg-config
+
+    - name: Setup JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    # 2. Tell CodeQL to track BOTH Java and C++ simultaneously
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: cpp, java
+        queries: security-extended
+
+    # 3. Trigger the FULL Gradle build for the entire repo
+    # The 'sdk' task builds all Java classes and all native libraries
+    - name: Build Full JavaFX SDK
+      run: |
+        bash gradlew -PCOMPILE_WEBKIT=true -PCOMPILE_MEDIA=true sdk
+
+    # 4. Analyze the database and upload to your Security tab
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:cpp-and-java"
